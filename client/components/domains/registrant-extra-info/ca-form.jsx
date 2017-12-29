@@ -144,12 +144,12 @@ export class RegistrantExtraInfoCaForm extends React.PureComponent {
 		} );
 	};
 
-	shouldRenderOrganizationField() {
-		return this.props.contactDetails.extra && this.props.contactDetails.extra.legalType === 'CCO';
+	needsOrganization() {
+		return this.props..contactDetails.extra.legalType === 'CCO';
 	}
 
 	organizationFieldIsValid() {
-		if ( this.shouldRenderOrganizationField() ) {
+		if ( this.needsOrganization() ) {
 			return (
 				! isEmpty( this.props.contactDetails.organization ) &&
 				isEmpty( this.state.errorMessages.organization )
@@ -179,6 +179,7 @@ export class RegistrantExtraInfoCaForm extends React.PureComponent {
 					isError={ ! this.organizationFieldIsValid() }
 					errorMessage={ this.getOrganizationErrorMessage() }
 					label={ translate( 'Organization' ) }
+					labelProps: { optional: ! this.needsOrganization() },
 					onChange={ this.handleChangeEvent }
 				/>
 			</FormFieldset>
@@ -191,6 +192,7 @@ export class RegistrantExtraInfoCaForm extends React.PureComponent {
 			...defaultValues,
 			...this.props.contactDetails.extra,
 		};
+
 		const formIsValid = ciraAgreementAccepted && this.organizationFieldIsValid();
 		const validatingSubmitButton = formIsValid ? children : disableSubmitButton( children );
 
@@ -234,7 +236,7 @@ export class RegistrantExtraInfoCaForm extends React.PureComponent {
 						) }
 					</FormLabel>
 				</FormFieldset>
-				{ this.shouldRenderOrganizationField() && this.renderOrganizationField() }
+				{ this.renderOrganizationField() }
 				{ validatingSubmitButton }
 			</form>
 		);
