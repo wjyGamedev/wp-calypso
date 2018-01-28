@@ -344,6 +344,10 @@ const Checkout = createReactClass( {
 			: `/checkout/thank-you/${ selectedSiteSlug }/${ receiptId }`;
 	},
 
+	handleCheckoutExternalRedirect: function( redirectUrl ) {
+		window.location.href = redirectUrl;
+	},
+
 	handleCheckoutCompleteRedirect: function() {
 		let product, purchasedProducts, renewalItem;
 
@@ -474,6 +478,7 @@ const Checkout = createReactClass( {
 				selectedSite={ selectedSite }
 				redirectTo={ this.getCheckoutCompleteRedirectPath }
 				handleCheckoutCompleteRedirect={ this.handleCheckoutCompleteRedirect }
+				handleCheckoutExternalRedirect={ this.handleCheckoutExternalRedirect }
 			/>
 		);
 	},
