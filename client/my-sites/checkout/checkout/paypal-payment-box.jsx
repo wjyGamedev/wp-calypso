@@ -13,7 +13,7 @@ import Gridicon from 'gridicons';
  * Internal dependencies
  */
 import analytics from 'lib/analytics';
-import cartValues from 'lib/cart-values';
+import cartValues, { getLocationOrigin } from 'lib/cart-values';
 import CountrySelect from 'my-sites/domains/components/form/country-select';
 import Input from 'my-sites/domains/components/form/input';
 import notices from 'notices';
@@ -55,15 +55,11 @@ class PaypalPaymentBox extends React.Component {
 		} );
 	};
 
-	getLocationOrigin = l => {
-		return l.protocol + '//' + l.hostname + ( l.port ? ':' + l.port : '' );
-	};
-
 	redirectToPayPal = event => {
 		var cart,
 			transaction,
 			dataForApi,
-			origin = this.getLocationOrigin( window.location );
+			origin = getLocationOrigin( window.location );
 		event.preventDefault();
 
 		cart = this.props.cart;

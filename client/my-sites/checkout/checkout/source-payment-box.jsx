@@ -15,7 +15,7 @@ import { PLAN_BUSINESS } from 'lib/plans/constants';
 import CartToggle from './cart-toggle';
 import TermsOfService from './terms-of-service';
 import Input from 'my-sites/domains/components/form/input';
-import cartValues, { paymentMethodName, paymentMethodClassName } from 'lib/cart-values';
+import cartValues, { paymentMethodName, paymentMethodClassName, getLocationOrigin } from 'lib/cart-values';
 import SubscriptionText from './subscription-text';
 import analytics from 'lib/analytics';
 import wpcom from 'lib/wp';
@@ -35,10 +35,6 @@ class SourcePaymentBox extends PureComponent {
 		super();
 		this.redirectToPayment = this.redirectToPayment.bind( this );
 		this.handleChange = this.handleChange.bind( this );
-	}
-
-	getLocationOrigin( l ) {
-		return l.protocol + '//' + l.hostname + ( l.port ? ':' + l.port : '' );
 	}
 
 	handleChange( event ) {
@@ -66,7 +62,7 @@ class SourcePaymentBox extends PureComponent {
 	}
 
 	redirectToPayment( event ) {
-		const origin = this.getLocationOrigin( location );
+		const origin = getLocationOrigin( location );
 		event.preventDefault();
 
 		this.setSubmitState( {

@@ -30,11 +30,13 @@ export function setNewCreditCardDetails( options ) {
 	} );
 }
 
-export function submitTransaction( { cart, transaction }, onComplete ) {
+export function submitTransaction( { cart, transaction, successUrl, cancelUrl }, onComplete ) {
 	const steps = submit( {
 		cart: cart,
 		payment: transaction.payment,
 		domainDetails: transaction.domainDetails,
+		successUrl,
+		cancelUrl,
 	} );
 
 	steps.on( 'data', step => {
