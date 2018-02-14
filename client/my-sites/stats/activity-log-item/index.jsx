@@ -3,10 +3,12 @@
  * External dependencies
  */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import scrollTo from 'lib/scroll-to';
 import { localize } from 'i18n-calypso';
+import { get } from 'lodash';
 
 /**
  * Internal dependencies
@@ -15,6 +17,7 @@ import ActivityActor from './activity-actor';
 import ActivityIcon from './activity-icon';
 import ActivityLogConfirmDialog from '../activity-log-confirm-dialog';
 import Gridicon from 'gridicons';
+import Button from 'components/button';
 import HappychatButton from 'components/happychat/button';
 import SplitButton from 'components/split-button';
 import FoldableCard from 'components/foldable-card';
@@ -36,13 +39,44 @@ import {
 	getSiteGmtOffset,
 	getSiteTimezoneValue,
 } from 'state/selectors';
-
+import { getSelectedSiteSlug } from 'state/ui/selectors';
 import { adjustMoment } from '../activity-log/utils';
+import { getSite } from 'state/sites/selectors';
+import PluginsActions from 'lib/plugins/actions';
+import PluginsStore from 'lib/plugins/store';
 
 class ActivityLogItem extends Component {
+	static propTypes = {
+		siteId: PropTypes.number.isRequired,
+
+		// Connected props
+		siteSlug: PropTypes.string.isRequired,
+
+		// localize
+		translate: PropTypes.func.isRequired,
+	};
+
 	confirmBackup = () => this.props.confirmBackup( this.props.activity.rewindId );
 
 	confirmRewind = () => this.props.confirmRewind( this.props.activity.rewindId );
+
+	componentDidMount() {
+		PluginsStore.on( 'change', this.refreshSitesAndPlugins );
+	}
+
+	componentWillUnmount() {
+		PluginsStore.removeListener( 'change', this.refreshSitesAndPlugins );
+	}
+
+	getPlugins = () => ( {
+		plugins: PluginsStore.getPlugins( this.props.site ),
+	} );
+
+	refreshSitesAndPlugins = () => {
+		this.setState( this.getPlugins() );
+	};
+
+	state = this.getPlugins();
 
 	renderHeader() {
 		const {
@@ -74,7 +108,29 @@ class ActivityLogItem extends Component {
 	}
 
 	renderItemAction() {
-		const { hideRestore, activity: { activityIsRewindable, activityName } } = this.props;
+		const {
+			siteSlug,
+			translate,
+			hideRestore,
+			activity: { activityIsRewindable, activityName },
+		} = this.props;
+
+		if ( 'plugin__update_available' === activityName ) {
+			const pluginSlug = get( this.props.activity, 'activityDescription.0.pluginSlug', '' );
+			return (
+				pluginSlug && (
+					<Button
+						primary
+						compact
+						className="activity-log-item__action"
+						/*href={ `/plugins/${ pluginSlug }/${ siteSlug }` }*/
+						onClick={ this.handlePluginUpdate }
+					>
+						{ translate( 'Update plugin' ) }
+					</Button>
+				)
+			);
+		}
 
 		switch ( activityName ) {
 			case 'rewind__scan_result_found':
@@ -88,6 +144,19 @@ class ActivityLogItem extends Component {
 			return this.renderRewindAction();
 		}
 	}
+
+	/**
+	 * Initiate a plugin update based on its slug. The plugin must have this info
+	 */
+	handlePluginUpdate = () => {
+		const pluginSlug = get( this.props.activity, 'activityDescription.0.pluginSlug', '' );
+		const sitePlugins = this.state.plugins;
+		console.log( 'sitePlugins', sitePlugins );
+		/*PluginsActions.updatePlugin(
+			this.props.site,
+			sitePlugins
+		);*/
+	};
 
 	renderRewindAction() {
 		const { createBackup, createRewind, disableRestore, disableBackup, translate } = this.props;
@@ -233,6 +302,8 @@ const mapStateToProps = ( state, { activityId, siteId } ) => ( {
 	mightBackup: activityId && activityId === getRequestedBackup( state, siteId ),
 	mightRewind: activityId && activityId === getRequestedRewind( state, siteId ),
 	timezone: getSiteTimezoneValue( state, siteId ),
+	siteSlug: getSelectedSiteSlug( state, siteId ),
+	site: getSite( state, siteId ),
 } );
 
 const mapDispatchToProps = ( dispatch, { activityId, siteId } ) => ( {
