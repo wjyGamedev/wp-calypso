@@ -61,6 +61,7 @@ import {
 	getSiteTimezoneValue,
 	getOldestItemTs,
 } from 'state/selectors';
+import * as ids from 'state/resource-ids';
 
 const flushEmptyDays = days => [
 	days.length === 1 ? 'empty-day' : 'empty-range',
@@ -646,7 +647,7 @@ export default connect(
 			siteId,
 			siteTitle: getSiteTitle( state, siteId ),
 			slug: getSiteSlug( state, siteId ),
-			tags: getHttpData( 'tags' ).data,
+			tags: getHttpData( ids.readerTags() ).data,
 			timezone,
 			oldestItemTs: getOldestItemTs( state, siteId ),
 		};
