@@ -51,7 +51,6 @@ import {
 	getActivityLog,
 	getActivityLogs,
 	getBackupProgress,
-	getHttpData,
 	getRequest,
 	getRequestedBackup,
 	getRequestedRewind,
@@ -61,7 +60,6 @@ import {
 	getSiteTimezoneValue,
 	getOldestItemTs,
 } from 'state/selectors';
-import * as ids from 'state/resource-ids';
 
 const flushEmptyDays = days => [
 	days.length === 1 ? 'empty-day' : 'empty-range',
@@ -449,7 +447,6 @@ class ActivityLog extends Component {
 			rewindState,
 			siteId,
 			slug,
-			tags,
 			translate,
 		} = this.props;
 
@@ -480,7 +477,6 @@ class ActivityLog extends Component {
 
 		return (
 			<div>
-				{ tags && <div>Tags: { tags.length }</div> }
 				<QueryActivityLog siteId={ siteId } { ...logRequestQuery } />
 				{ siteId &&
 					'active' === rewindState.state && <QueryRewindBackupStatus siteId={ siteId } /> }
@@ -647,7 +643,6 @@ export default connect(
 			siteId,
 			siteTitle: getSiteTitle( state, siteId ),
 			slug: getSiteSlug( state, siteId ),
-			tags: getHttpData( ids.readerTags() ).data,
 			timezone,
 			oldestItemTs: getOldestItemTs( state, siteId ),
 		};
