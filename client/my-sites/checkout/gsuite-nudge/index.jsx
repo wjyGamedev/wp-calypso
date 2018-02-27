@@ -26,7 +26,6 @@ export class GsuiteNudge extends React.Component {
 	static propTypes = {
 		domain: PropTypes.string.isRequired,
 		receiptId: PropTypes.number.isRequired,
-		productsList: PropTypes.object.isRequired,
 		selectedSiteId: PropTypes.number.isRequired,
 	};
 
@@ -70,7 +69,6 @@ export class GsuiteNudge extends React.Component {
 				<QuerySites siteId={ selectedSiteId } />
 				<GoogleAppsDialog
 					domain={ this.props.domain }
-					productsList={ this.props.productsList }
 					onClickSkip={ this.handleClickSkip }
 					onAddGoogleApps={ this.handleAddGoogleApps }
 				/>
