@@ -7,8 +7,7 @@ import { flatten, filter, find, get, isEmpty, isEqual, reduce, startsWith } from
 import i18n, { localize } from 'i18n-calypso';
 import page from 'page';
 import PropTypes from 'prop-types';
-import React from 'react';
-import createReactClass from 'create-react-class';
+import React, { Component } from 'react';
 
 /**
  * Internal dependencies
@@ -28,9 +27,6 @@ import { fetchReceiptCompleted } from 'state/receipts/actions';
 import { getExitCheckoutUrl } from 'lib/checkout';
 import { hasDomainDetails } from 'lib/store-transactions';
 import notices from 'notices';
-/* eslint-disable no-restricted-imports */
-import observe from 'lib/mixins/data-observe';
-/* eslint-enable no-restricted-imports */
 import { managePurchase } from 'me/purchases/paths';
 import QueryContactDetailsCache from 'components/data/query-contact-details-cache';
 import QueryStoredCards from 'components/data/query-stored-cards';
@@ -64,29 +60,24 @@ import { getDomainNameFromReceiptOrCart } from 'lib/domains/utils';
 import { fetchSitesAndUser } from 'lib/signup/step-actions';
 import { loadTrackingTool } from 'state/analytics/actions';
 
-const Checkout = createReactClass( {
-	displayName: 'Checkout',
-	mixins: [ observe( 'sites' ) ],
-
-	propTypes: {
+export class Checkout extends Component {
+	static propTypes = {
 		cards: PropTypes.array.isRequired,
 		couponCode: PropTypes.string,
 		selectedFeature: PropTypes.string,
 		isFetchingProducts: PropTypes.bool,
-	},
+	};
 
-	getInitialState: function() {
-		return {
-			previousCart: null,
-		};
-	},
+	state = {
+		previousCart: null,
+	};
 
-	componentWillMount: function() {
+	componentWillMount() {
 		resetTransaction();
 		this.props.recordApplePayStatus();
-	},
+	}
 
-	componentDidMount: function() {
+	componentDidMount() {
 		if ( this.redirectIfEmptyCart() ) {
 			return;
 		}
@@ -101,9 +92,9 @@ const Checkout = createReactClass( {
 
 		window.scrollTo( 0, 0 );
 		this.props.loadTrackingTool( 'HotJar' );
-	},
+	}
 
-	componentWillReceiveProps: function( nextProps ) {
+	componentWillReceiveProps( nextProps ) {
 		if (
 			! this.props.cart.hasLoadedFromServer &&
 			nextProps.cart.hasLoadedFromServer &&
@@ -111,9 +102,9 @@ const Checkout = createReactClass( {
 		) {
 			this.addProductToCart();
 		}
-	},
+	}
 
-	componentDidUpdate: function() {
+	componentDidUpdate() {
 		if ( ! this.props.cart.hasLoadedFromServer ) {
 			return false;
 		}
@@ -134,7 +125,7 @@ const Checkout = createReactClass( {
 		) {
 			this.setDomainDetailsForGsuiteCart();
 		}
-	},
+	}
 
 	setDomainDetailsForGsuiteCart() {
 		const { contactDetails, cart } = this.props;
@@ -147,9 +138,9 @@ const Checkout = createReactClass( {
 		if ( domainReceiptId ) {
 			setDomainDetails( contactDetails );
 		}
-	},
+	}
 
-	trackPageView: function( props ) {
+	trackPageView( props ) {
 		props = props || this.props;
 
 		analytics.tracks.recordEvent( 'calypso_checkout_page_view', {
@@ -158,14 +149,14 @@ const Checkout = createReactClass( {
 		} );
 
 		recordViewCheckout( props.cart );
-	},
+	}
 
 	getProductSlugFromSynonym( slug ) {
 		if ( 'no-ads' === slug ) {
 			return 'no-adverts/no-adverts.php';
 		}
 		return slug;
-	},
+	}
 
 	addProductToCart() {
 		if ( this.props.purchaseId ) {
@@ -176,7 +167,7 @@ const Checkout = createReactClass( {
 		if ( this.props.couponCode ) {
 			applyCoupon( this.props.couponCode );
 		}
-	},
+	}
 
 	addRenewItemToCart() {
 		const { product, purchaseId, selectedSiteSlug } = this.props;
@@ -199,7 +190,7 @@ const Checkout = createReactClass( {
 		);
 
 		addItem( cartItem );
-	},
+	}
 
 	addNewItemToCart() {
 		const planSlug = getUpgradePlanSlugFromPath( this.props.product, this.props.selectedSite );
@@ -223,9 +214,9 @@ const Checkout = createReactClass( {
 		if ( cartItem ) {
 			addItem( cartItem );
 		}
-	},
+	}
 
-	redirectIfEmptyCart: function() {
+	redirectIfEmptyCart() {
 		const { selectedSiteSlug, transaction } = this.props;
 		let redirectTo = '/plans/';
 
@@ -259,7 +250,7 @@ const Checkout = createReactClass( {
 		page.redirect( redirectTo );
 
 		return true;
-	},
+	}
 
 	/**
 	 * Purchases are of the format { [siteId]: [ { productId: ... } ] }
@@ -268,9 +259,9 @@ const Checkout = createReactClass( {
 	 * @param {Object} purchases keyed by siteId { [siteId]: [ { productId: ... } ] }
 	 * @returns {Array} of product objects [ { productId: ... }, ... ]
 	 */
-	flattenPurchases: function( purchases ) {
+	flattenPurchases( purchases ) {
 		return flatten( Object.values( purchases ) );
-	},
+	}
 
 	getEligibleDomainFromCart() {
 		const domainRegistrations = cartItems.getDomainRegistrations( this.props.cart );
@@ -280,9 +271,9 @@ const Checkout = createReactClass( {
 		);
 
 		return domainsForGSuite;
-	},
+	}
 
-	getCheckoutCompleteRedirectPath() {
+	getCheckoutCompleteRedirectPath = () => {
 		let renewalItem;
 		const { cart, selectedSiteSlug, transaction: { step: { data: receipt } } } = this.props;
 		const domainReceiptId = get(
@@ -345,9 +336,9 @@ const Checkout = createReactClass( {
 					this.props.selectedFeature
 				}/${ selectedSiteSlug }/${ receiptId }`
 			: `/checkout/thank-you/${ selectedSiteSlug }/${ receiptId }`;
-	},
+	};
 
-	handleCheckoutCompleteRedirect: function() {
+	handleCheckoutCompleteRedirect = () => {
 		let product, purchasedProducts, renewalItem;
 
 		const {
@@ -452,9 +443,9 @@ const Checkout = createReactClass( {
 		}
 
 		page( redirectPath );
-	},
+	};
 
-	content: function() {
+	content() {
 		const { selectedSite } = this.props;
 
 		if ( ! this.isLoading() && this.needsDomainDetails() ) {
@@ -477,21 +468,21 @@ const Checkout = createReactClass( {
 				handleCheckoutCompleteRedirect={ this.handleCheckoutCompleteRedirect }
 			/>
 		);
-	},
+	}
 
-	paymentMethodsAbTestFilter: function() {
+	paymentMethodsAbTestFilter() {
 		// This methods can be used to filter payment methods
 		// For example, for the purpose of AB tests.
 
 		return this.props.paymentMethods;
-	},
+	}
 
-	isLoading: function() {
+	isLoading() {
 		const isLoadingCart = ! this.props.cart.hasLoadedFromServer; //@TODO is this a function? Should it be invoked for a bool?
 		const isLoadingProducts = this.props.isFetchingProducts;
 
 		return isLoadingCart || isLoadingProducts;
-	},
+	}
 
 	needsDomainDetails() {
 		const cart = this.props.cart,
@@ -508,7 +499,7 @@ const Checkout = createReactClass( {
 				cartItems.hasGoogleApps( cart ) ||
 				cartItems.hasTransferProduct( cart ) )
 		);
-	},
+	}
 
 	render() {
 		return (
@@ -523,8 +514,8 @@ const Checkout = createReactClass( {
 				</div>
 			</div>
 		);
-	},
-} );
+	}
+}
 
 export default connect(
 	( state, props ) => {
