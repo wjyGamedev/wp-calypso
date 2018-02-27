@@ -35,6 +35,7 @@ import { managePurchase } from 'me/purchases/paths';
 import QueryContactDetailsCache from 'components/data/query-contact-details-cache';
 import QueryStoredCards from 'components/data/query-stored-cards';
 import QueryGeo from 'components/data/query-geo';
+import QueryProducts from 'components/data/query-products-list';
 import SecurePaymentForm from './secure-payment-form';
 import SecurePaymentFormPlaceholder from './secure-payment-form-placeholder';
 import { AUTO_RENEWAL } from 'lib/url/support';
@@ -57,6 +58,7 @@ import { requestSite } from 'state/sites/actions';
 import { isNewSite } from 'state/sites/selectors';
 import { getSelectedSite, getSelectedSiteId, getSelectedSiteSlug } from 'state/ui/selectors';
 import { getCurrentUserCountryCode } from 'state/current-user/selectors';
+import { getProductsList, isProductsListFetching } from 'state/products-list/selectors';
 import { canAddGoogleApps } from 'lib/domains';
 import { getDomainNameFromReceiptOrCart } from 'lib/domains/utils';
 import { fetchSitesAndUser } from 'lib/signup/step-actions';
@@ -64,12 +66,13 @@ import { loadTrackingTool } from 'state/analytics/actions';
 
 const Checkout = createReactClass( {
 	displayName: 'Checkout',
-	mixins: [ observe( 'sites', 'productsList' ) ],
+	mixins: [ observe( 'sites' ) ],
 
 	propTypes: {
 		cards: PropTypes.array.isRequired,
 		couponCode: PropTypes.string,
 		selectedFeature: PropTypes.string,
+		isFetchingProducts: PropTypes.bool,
 	},
 
 	getInitialState: function() {
@@ -470,7 +473,7 @@ const Checkout = createReactClass( {
 				transaction={ this.props.transaction }
 				cards={ this.props.cards }
 				paymentMethods={ this.paymentMethodsAbTestFilter() }
-				products={ this.props.productsList.get() }
+				products={ this.props.productsList }
 				selectedSite={ selectedSite }
 				redirectTo={ this.getCheckoutCompleteRedirectPath }
 				handleCheckoutCompleteRedirect={ this.handleCheckoutCompleteRedirect }
@@ -486,8 +489,8 @@ const Checkout = createReactClass( {
 	},
 
 	isLoading: function() {
-		const isLoadingCart = ! this.props.cart.hasLoadedFromServer,
-			isLoadingProducts = ! this.props.productsList.hasLoadedFromServer();
+		const isLoadingCart = ! this.props.cart.hasLoadedFromServer; //@TODO is this a function? Should it be invoked for a bool?
+		const isLoadingProducts = this.props.isFetchingProducts;
 
 		return isLoadingCart || isLoadingProducts;
 	},
@@ -516,6 +519,7 @@ const Checkout = createReactClass( {
 					<QueryContactDetailsCache />
 					<QueryStoredCards />
 					<QueryGeo />
+					<QueryProducts />
 
 					{ this.content() }
 				</div>
@@ -543,6 +547,8 @@ export default connect(
 				selectedSiteId,
 				props.cart
 			),
+			productsList: getProductsList( state ),
+			isFetchingProducts: isProductsListFetching( state ),
 		};
 	},
 	{

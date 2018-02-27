@@ -59,7 +59,6 @@ export default {
 			<CheckoutData>
 				<Checkout
 					product={ product }
-					productsList={ productsList }
 					purchaseId={ context.params.purchaseId }
 					selectedFeature={ selectedFeature }
 					couponCode={ context.query.code }
@@ -83,7 +82,7 @@ export default {
 
 		context.primary = (
 			<CheckoutData>
-				<Checkout reduxStore={ context.store } productsList={ productsList } />
+				<Checkout reduxStore={ context.store } />
 			</CheckoutData>
 		);
 
