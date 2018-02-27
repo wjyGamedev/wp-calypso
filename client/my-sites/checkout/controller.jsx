@@ -111,7 +111,6 @@ export default {
 
 		context.primary = (
 			<CheckoutThankYouComponent
-				productsList={ productsList }
 				receiptId={ receiptId }
 				gsuiteReceiptId={ gsuiteReceiptId }
 				domainOnlySiteFlow={ isEmpty( context.params.site ) }
