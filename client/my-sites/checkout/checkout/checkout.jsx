@@ -458,9 +458,7 @@ const Checkout = createReactClass( {
 		const { selectedSite } = this.props;
 
 		if ( ! this.isLoading() && this.needsDomainDetails() ) {
-			return (
-				<DomainDetailsForm cart={ this.props.cart } productsList={ this.props.productsList } />
-			);
+			return <DomainDetailsForm cart={ this.props.cart } />;
 		} else if ( this.isLoading() || this.props.cart.hasPendingServerUpdates ) {
 			// hasPendingServerUpdates is an important check here as the content we display is dependent on the content of the cart
 

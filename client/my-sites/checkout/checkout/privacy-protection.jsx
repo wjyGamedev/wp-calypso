@@ -5,8 +5,10 @@
  */
 
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import classnames from 'classnames';
 import { localize } from 'i18n-calypso';
+import { flow, get } from 'lodash';
 /**
  * Internal dependencies
  */
@@ -16,16 +18,17 @@ import SectionHeader from 'components/section-header';
 import FormFieldset from 'components/forms/form-fieldset';
 import FormLabel from 'components/forms/form-label';
 import FormRadio from 'components/forms/form-radio';
+import QueryProducts from 'components/data/query-products-list';
+import { getProductsList } from 'state/products-list/selectors';
 
-class PrivacyProtection extends Component {
+export class PrivacyProtection extends Component {
 	hasDomainPartOfPlan = () => {
 		const cart = this.props.cart;
 		return cart.has_bundle_credit || cartItems.hasPlan( cart );
 	};
 
 	getPrivacyProtectionCost() {
-		const products = this.props.productsList.get();
-		return products.private_whois.cost_display;
+		return get( this.props.productsList, 'private_whois.cost_display' );
 	}
 
 	enablePrivacy = () => {
@@ -44,6 +47,7 @@ class PrivacyProtection extends Component {
 
 		return (
 			<div>
+				<QueryProducts />
 				<SectionHeader
 					className="checkout__privacy-protection-header"
 					label={ translate( 'Privacy Protection' ) }
@@ -139,4 +143,9 @@ class PrivacyProtection extends Component {
 	}
 }
 
-export default localize( PrivacyProtection );
+export default flow(
+	localize,
+	connect( state => ( {
+		productsList: getProductsList( state ),
+	} ) )
+)( PrivacyProtection );

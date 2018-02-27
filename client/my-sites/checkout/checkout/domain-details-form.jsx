@@ -167,7 +167,6 @@ export class DomainDetailsForm extends PureComponent {
 				checkPrivacyRadio={ this.allDomainItemsHavePrivacy() }
 				cart={ this.props.cart }
 				onRadioSelect={ this.handleRadioChange }
-				productsList={ this.props.productsList }
 			/>
 		);
 	}
