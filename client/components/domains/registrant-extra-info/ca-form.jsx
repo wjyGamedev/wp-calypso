@@ -148,6 +148,10 @@ export class RegistrantExtraInfoCaForm extends React.PureComponent {
 		return get( this.props.contactDetails, 'extra.legalType' ) === 'CCO';
 	}
 
+	organizationFieldIsValid() {
+		return isEmpty( this.getOrganizationErrorMessage() );
+	}
+
 	getOrganizationErrorMessage() {
 		let message = ( this.state.errorMessages.organization || [] ).join( '\n' );
 		if ( this.needsOrganization() && isEmpty( this.props.contactDetails.organization ) ) {
@@ -156,10 +160,6 @@ export class RegistrantExtraInfoCaForm extends React.PureComponent {
 			);
 		}
 		return message;
-	}
-
-	organizationFieldIsValid() {
-		return isEmpty( this.getOrganizationErrorMessage() );
 	}
 
 	renderOrganizationField() {
