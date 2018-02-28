@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
-import { debounce, camelCase, difference, isEmpty, keys, map, pick } from 'lodash';
+import { camelCase, debounce, difference, get, isEmpty, keys, map, pick } from 'lodash';
 
 /**
  * Internal dependencies
@@ -145,7 +145,7 @@ export class RegistrantExtraInfoCaForm extends React.PureComponent {
 	};
 
 	needsOrganization() {
-		return this.props..contactDetails.extra.legalType === 'CCO';
+		return get( this.props.contactDetails, 'extra.legalType' ) === 'CCO';
 	}
 
 	organizationFieldIsValid() {
