@@ -7,40 +7,55 @@ import page from 'page';
 /**
  * Internal dependencies
  */
-import { noSite, siteSelection } from 'my-sites/controller';
 import checkoutController from './controller';
 import SiftScience from 'lib/siftscience';
-import { makeLayout, render as clientRender } from 'controller';
+import userFactory from 'lib/user';
+import { makeLayout, render as clientRender, viaLogin } from 'controller';
+import { noSite, siteSelection } from 'my-sites/controller';
 
 export default function() {
+	const user = userFactory();
+	const isLoggedIn = !! user.get();
+
 	SiftScience.recordUser();
 
-	page(
-		'/checkout/thank-you/no-site/:receiptId?',
-		noSite,
-		checkoutController.checkoutThankYou,
-		makeLayout,
-		clientRender
-	);
+	if ( isLoggedIn ) {
+		page(
+			'/checkout/thank-you/no-site/:receiptId?',
+			noSite,
+			checkoutController.checkoutThankYou,
+			makeLayout,
+			clientRender
+		);
 
-	page(
-		'/checkout/thank-you/:site/:receiptId?',
-		siteSelection,
-		checkoutController.checkoutThankYou,
-		makeLayout,
-		clientRender
-	);
+		page(
+			'/checkout/thank-you/:site/:receiptId?',
+			siteSelection,
+			checkoutController.checkoutThankYou,
+			makeLayout,
+			clientRender
+		);
 
-	page(
-		'/checkout/thank-you/:site/:receiptId/with-gsuite/:gsuiteReceiptId',
-		siteSelection,
-		checkoutController.checkoutThankYou,
-		makeLayout,
-		clientRender
-	);
+		page(
+			'/checkout/thank-you/:site/:receiptId/with-gsuite/:gsuiteReceiptId',
+			siteSelection,
+			checkoutController.checkoutThankYou,
+			makeLayout,
+			clientRender
+		);
+
+		page(
+			'/checkout/thank-you/features/:feature/:site/:receiptId?',
+			siteSelection,
+			checkoutController.checkoutThankYou,
+			makeLayout,
+			clientRender
+		);
+	}
 
 	page(
 		'/checkout/features/:feature/:domain/:plan_name?',
+		viaLogin,
 		siteSelection,
 		checkoutController.checkout,
 		makeLayout,
@@ -48,15 +63,8 @@ export default function() {
 	);
 
 	page(
-		'/checkout/thank-you/features/:feature/:site/:receiptId?',
-		siteSelection,
-		checkoutController.checkoutThankYou,
-		makeLayout,
-		clientRender
-	);
-
-	page(
 		'/checkout/no-site',
+		viaLogin,
 		noSite,
 		checkoutController.sitelessCheckout,
 		makeLayout,
@@ -65,6 +73,7 @@ export default function() {
 
 	page(
 		'/checkout/:domain/:product?',
+		viaLogin,
 		siteSelection,
 		checkoutController.checkout,
 		makeLayout,
@@ -73,6 +82,7 @@ export default function() {
 
 	page(
 		'/checkout/:product/renew/:purchaseId/:domain',
+		viaLogin,
 		siteSelection,
 		checkoutController.checkout,
 		makeLayout,
@@ -81,6 +91,7 @@ export default function() {
 
 	page(
 		'/checkout/:site/with-gsuite/:domain/:receiptId?',
+		viaLogin,
 		siteSelection,
 		checkoutController.gsuiteNudge,
 		makeLayout,

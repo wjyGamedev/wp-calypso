@@ -237,6 +237,7 @@ const sections = [
 		module: 'my-sites/checkout',
 		secondary: true,
 		group: 'sites',
+		enableLoggedOut: true,
 	},
 	{
 		name: 'plans',

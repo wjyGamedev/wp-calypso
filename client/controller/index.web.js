@@ -16,6 +16,7 @@ import Layout from 'layout';
 import LayoutLoggedOut from 'layout/logged-out';
 import nuxWelcome from 'layout/nux-welcome';
 import translatorInvitation from 'layout/community-translator/invitation-utils';
+import { login } from 'lib/paths';
 import { makeLayoutMiddleware } from './shared.js';
 import { getCurrentUser } from 'state/current-user/selectors';
 import userFactory from 'lib/user';
@@ -71,6 +72,16 @@ export function redirectLoggedIn( context, next ) {
 		return;
 	}
 
+	next();
+}
+
+// Middleware for showing Calypso login form before arriving at the requested route
+export function viaLogin( context, next ) {
+	const currentUser = getCurrentUser( context.store.getState() );
+
+	if ( ! currentUser ) {
+		return page.redirect( login( { isNative: true, redirectTo: context.path } ) );
+	}
 	next();
 }
 
