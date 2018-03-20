@@ -60,7 +60,6 @@ const config = {
 		test: {
 			plugins: [
 				'./server/bundler/babel/babel-lodash-es',
-				[ 'transform-builtin-extend', { globals: [ 'Error' ] } ],
 			],
 		},
 	},
