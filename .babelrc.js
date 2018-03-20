@@ -16,7 +16,7 @@ const config = {
 			{
 				modules,
 				targets: {
-					browsers: [ 'last 2 versions', 'Safari >= 10', 'iOS >= 10', 'not ie <= 10' ],
+					browsers: [ 'last 2 versions', 'Safari >= 10', 'iOS >= 10', 'ie >= 11' ],
 				},
 				exclude: [ 'transform-classes', 'transform-template-literals' ], // transform-classes is added manually later.
 			},
@@ -60,6 +60,7 @@ const config = {
 		test: {
 			plugins: [
 				'./server/bundler/babel/babel-lodash-es',
+				[ 'transform-builtin-extend', { globals: [ 'Error' ] } ],
 			],
 		},
 	},
