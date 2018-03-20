@@ -240,11 +240,12 @@ if ( isDevelopment ) {
 	] );
 	webpackConfig.entry.build = [
 		'webpack-hot-middleware/client',
+		'babel-polyfill',
 		path.join( __dirname, 'client', 'boot', 'app' ),
 	];
 	webpackConfig.devServer = { hot: true, inline: true };
 } else {
-	webpackConfig.entry.build = path.join( __dirname, 'client', 'boot', 'app' );
+	webpackConfig.entry.build = [ 'babel-polyfill', path.join( __dirname, 'client', 'boot', 'app' ) ];
 }
 
 if ( ! config.isEnabled( 'desktop' ) ) {
