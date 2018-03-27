@@ -29,7 +29,7 @@
           "dev": true,
           "requires": {
             "ast-types": "0.10.1",
-            "core-js": "2.5.3",
+            "core-js": "2.5.4",
             "esprima": "4.0.0",
             "private": "0.1.8",
             "source-map": "0.6.1"
@@ -1302,7 +1302,7 @@
       "dev": true,
       "requires": {
         "babel-runtime": "6.26.0",
-        "core-js": "2.5.3",
+        "core-js": "2.5.4",
         "regenerator-runtime": "0.10.5"
       },
       "dependencies": {
@@ -1471,7 +1471,7 @@
       "requires": {
         "babel-core": "6.25.0",
         "babel-runtime": "6.26.0",
-        "core-js": "2.5.3",
+        "core-js": "2.5.4",
         "home-or-tmp": "2.0.0",
         "lodash": "4.17.5",
         "mkdirp": "0.5.1",
@@ -1495,7 +1495,7 @@
       "version": "6.26.0",
       "integrity": "sha1-llxwWGaOgrVde/4E/yM3vItWR/4=",
       "requires": {
-        "core-js": "2.5.3",
+        "core-js": "2.5.4",
         "regenerator-runtime": "0.11.1"
       }
     },
@@ -2772,8 +2772,8 @@
       }
     },
     "core-js": {
-      "version": "2.5.3",
-      "integrity": "sha1-isw4NFgk8W2DZbfJtCWRaOjtYD4="
+      "version": "2.5.4",
+      "integrity": "sha1-8si/GB8qgLkvNgEhQpzmOi8K6uA="
     },
     "core-util-is": {
       "version": "1.0.2",
@@ -15418,10 +15418,6 @@
       "requires": {
         "safe-buffer": "5.1.1"
       }
-    },
-    "tween.js": {
-      "version": "16.3.1",
-      "integrity": "sha1-5VUw3c+d6RObi1glTRyeUMdy30U="
     },
     "tweetnacl": {
       "version": "0.14.5",
