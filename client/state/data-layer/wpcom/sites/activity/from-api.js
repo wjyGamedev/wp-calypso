@@ -45,6 +45,8 @@ export function transformer( apiResponse ) {
 export function processItem( item ) {
 	const published = item.published;
 	const actor = item.actor;
+	const activityMeta =
+		'2' === get( item, [ 'object', 'error_code' ], '' ) ? { errorCode: 'bad_credentials' } : {};
 
 	return {
 		/* activity actor */
@@ -69,6 +71,7 @@ export function processItem( item ) {
 		activityTitle: item.summary,
 		activityTs: Date.parse( published ),
 		activityDescription: parseBlock( item.content ),
+		activityMeta,
 	};
 }
 
