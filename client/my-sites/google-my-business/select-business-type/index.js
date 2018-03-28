@@ -79,7 +79,7 @@ class SelectBusinessType extends Component {
 		} else {
 			connectButton = (
 				<Button
-					primary={ true }
+					primary
 					href="https://www.google.com/business/"
 					target="_blank"
 					onClick={ this.trackCreateMyListingClick }
